@@ -1,0 +1,148 @@
+﻿@model IEnumerable<BookNookWebApp.Models.Books>
+
+@{
+    ViewData["Title"] = "Our Books";
+}
+
+<h1 class="display-4"><em>Featured Books</em></h1>
+<p class="lead">Find your next favorite read, from new releases to timeless classics.</p>
+
+<div class="container mt-4 text-dark">
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+
+        <!-- Book 1 -->
+        <div class="col">
+            <div class="card border-0 shadow-sm h-100 image-hover-card">
+                <div class="image-container"
+                     data-title="Persepolis Marjane Satrapi"
+                     data-bs-toggle="modal"
+                     data-bs-target="#bookModal"
+                     onclick="loadBookInfo(this)"
+                     style="cursor:pointer;">
+                    <img src="~/css/Persepolis.jpg" class="card-img-top" alt="Persepolis" />
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">Persepolis</h5>
+                    <p class="card-text text-muted">Marjane Satrapi</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Book 2 -->
+        <div class="col">
+            <div class="card border-0 shadow-sm h-100 image-hover-card">
+                <div class="image-container"
+                     data-title="The Word is Murder Anthony Horowitz"
+                     data-bs-toggle="modal"
+                     data-bs-target="#bookModal"
+                     onclick="loadBookInfo(this)"
+                     style="cursor:pointer;">
+                    <img src="~/css/Murder Book.jpg" class="card-img-top" alt="The Word is Murder" />
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">The Word is Murder</h5>
+                    <p class="card-text text-muted">Anthony Horowitz</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Book 3 -->
+        <div class="col">
+            <div class="card border-0 shadow-sm h-100 image-hover-card">
+                <div class="image-container"
+                     data-title="Percy Jackson Rick Riordan"
+                     data-bs-toggle="modal"
+                     data-bs-target="#bookModal"
+                     onclick="loadBookInfo(this)"
+                     style="cursor:pointer;">
+                    <img src="~/css/Percy Jackson.jpg" class="card-img-top" alt="Percy Jackson" />
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">Percy Jackson and the Wrath of the Three Headed Goddess</h5>
+                    <p class="card-text text-muted">Rick Riordan</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- Book Info Modal -->
+<div class="modal fade" id="bookModal" tabindex="-1" aria-labelledby="bookModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="bookModalLabel">Loading...</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p id="bookDescription">Fetching book information...</p>
+                <img id="bookImage" src="" alt="Book Cover" class="img-fluid mb-3" style="max-height: 300px;" />
+                <br />
+                <a id="googleLink" href="#" target="_blank" class="btn btn-primary mt-2">View on Google Books</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- CSS for Hover Effects -->
+<style>
+    .image-container {
+        overflow: hidden;
+        border-radius: 0.5rem;
+    }
+
+        .image-container img {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border-radius: 0.5rem;
+        }
+
+            .image-container img:hover {
+                transform: scale(1.05);
+                box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+            }
+
+    .image-hover-card:hover {
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+    }
+</style>
+
+<!-- JavaScript to Fetch from Google Books API -->
+<script>
+    async function loadBookInfo(element) {
+        const title = element.getAttribute("data-title");
+        const modalTitle = document.getElementById("bookModalLabel");
+        const description = document.getElementById("bookDescription");
+        const image = document.getElementById("bookImage");
+        const link = document.getElementById("googleLink");
+
+        modalTitle.textContent = "Loading...";
+        description.textContent = "Fetching book information...";
+        image.src = "";
+        image.style.display = "none";
+        link.style.display = "none";
+
+        try {
+            const response = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(title)}`);
+            const data = await response.json();
+
+            if (data.totalItems > 0) {
+                const book = data.items[0].volumeInfo;
+                modalTitle.textContent = book.title || "No Title";
+                description.textContent = book.description || "No description available.";
+                if (book.imageLinks?.thumbnail) {
+                    image.src = book.imageLinks.thumbnail;
+                    image.style.display = "block";
+                }
+                link.href = book.infoLink || "#";
+                link.style.display = "inline-block";
+            } else {
+                modalTitle.textContent = "No book found.";
+                description.textContent = "";
+            }
+        } catch (error) {
+            modalTitle.textContent = "Error loading book info.";
+            description.textContent = "Could not retrieve book data.";
+        }
+    }
+</script>

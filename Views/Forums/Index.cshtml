@@ -1,0 +1,88 @@
+﻿@model IEnumerable<BookNookWebApp.Models.Forums>
+
+@{
+    ViewData["Title"] = "Forums";
+}
+
+<h1 class="display-4"><em>Our Forums</em></h1>
+
+
+<div class="container mt-4 text-dark">
+
+    <!-- Header -->
+    <div class="mb-4">
+        <h1 class="fw-bold">Welcome to the forums</h1>
+        <p class="lead">Come and connect with like-minded readers in the Nook!</p>
+    </div>
+
+    <!-- Topic Cards -->
+    <div class="row row-cols-1 row-cols-md-2 g-4">
+
+        <!-- Topic 1 -->
+        <div class="col">
+            <div class="card border-dark h-100">
+                <div class="card-body">
+                    <h5 class="card-title">General Discussion</h5>
+                    <p class="card-text">Tell us about your favorite book!</p>
+                    <a href="/Topics/GeneralDiscussion" class="btn btn-dark">Enter</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Topic 2 -->
+        <div class="col">
+            <div class="card border-dark h-100">
+                <div class="card-body">
+                    <h5 class="card-title">New Reads</h5>
+                    <p class="card-text">What's your favorite new book and what makes it so captivating!</p>
+                    <a href="/Topics/NewReads" class="btn btn-dark">Enter</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Topic 3 -->
+        <div class="col">
+            <div class="card border-dark h-100">
+                <div class="card-body">
+                    <h5 class="card-title">They don't stop coming!</h5>
+                    <p class="card-text"> What is your favorite series of books and your favorite installment!</p>
+                    <a href="/Topics/Series" class="btn btn-dark">Enter</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Topic 4 -->
+        <div class="col">
+            <div class="card border-dark h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Dystopia</h5>
+                    <p class="card-text">What's your favorit book or novel that takes a look at the world with new perspective and light in an outside world'</p>
+                    <a href="/Topics/Dystopia" class="btn btn-dark">Enter</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Topic 5 -->
+        <div class="col">
+            <div class="card border-dark h-100">
+                <div class="card-body">
+                    <h5 class="card-title">History</h5>
+                    <p class="card-text">Let's talk history! Are there any historical texts that make you think deeper?</p>
+                    <a href="/Topics/History" class="btn btn-dark">Enter</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col">
+            <div class="card border-dark h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Romance</h5>
+                    <p class="card-text">Love is in the air! Tell us what romance novels have been having you swoon for your favorite character!</p>
+                    <a href="/Topics/Romance" class="btn btn-dark">Enter</a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
