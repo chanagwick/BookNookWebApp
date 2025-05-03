@@ -1,0 +1,43 @@
+﻿@model IEnumerable<BookNookWebApp.Models.Topics>
+
+@{
+    ViewData["Title"] = "General Discussion";
+}
+
+<h1 class="display-4"><em>General Discussion</em></h1>
+
+<div class="container mt-4 text-dark">
+    <!-- Forum Header -->
+    <div class="mb-4">
+        <h2 class="fw-bold">Share your thoughts!</h2>
+        <p class="lead">This is the place to talk about your favorite books, authors, and more. Jump in and start a conversation.</p>
+    </div>
+
+    <!-- New Topic Button -->
+    <div class="mb-3">
+        <a href="/Topics/Create" class="btn btn-dark">Start a New Topic</a>
+    </div>
+
+    <!-- List of Topics -->
+    <div class="list-group">
+        @if (Model.Any())
+        {
+            foreach (var topic in Model)
+            {
+                <a href="/Topics/Details/@topic.TopicId" class="list-group-item list-group-item-action border-dark mb-2 rounded shadow-sm">
+                    <h5 class="mb-1">@topic.Title</h5>
+                    @if (!string.IsNullOrWhiteSpace(topic.Description))
+                    {
+                        <p class="mb-1 text-muted">@topic.Description</p>
+                    }
+                </a>
+            }
+        }
+        else
+        {
+            <div class="alert alert-info">
+                No discussions yet. Be the first to post!
+            </div>
+        }
+    </div>
+</div>

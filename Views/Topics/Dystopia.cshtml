@@ -1,0 +1,43 @@
+﻿@model IEnumerable<BookNookWebApp.Models.Topics>
+
+@{
+    ViewData["Title"] = "Dystopia";
+}
+
+<h1 class="display-4"><em>Welcome to the Dystopian Future!</em></h1>
+
+<div class="container mt-4 text-dark">
+    <!-- Forum Header -->
+    <div class="mb-4">
+        <h2 class="fw-bold">Discuss Dystopian Worlds</h2>
+        <p class="lead">Dive into stories that paint a picture of a world gone wrong. What dystopian topics interest you most?</p>
+    </div>
+
+    <!-- New Topic Button -->
+    <div class="mb-3">
+        <a href="/Topics/Create" class="btn btn-dark">Start a New Topic</a>
+    </div>
+
+    <!-- List of Topics -->
+    <div class="list-group">
+        @if (Model.Any())
+        {
+            foreach (var topic in Model)
+            {
+                <a href="/Topics/Details/@topic.TopicId" class="list-group-item list-group-item-action border-dark mb-2 rounded shadow-sm">
+                    <h5 class="mb-1">@topic.Title</h5>
+                    @if (!string.IsNullOrWhiteSpace(topic.Description))
+                    {
+                        <p class="mb-1 text-muted">@topic.Description</p>
+                    }
+                </a>
+            }
+        }
+        else
+        {
+            <div class="alert alert-info">
+                No dystopian topics yet. Start the conversation!
+            </div>
+        }
+    </div>
+</div>

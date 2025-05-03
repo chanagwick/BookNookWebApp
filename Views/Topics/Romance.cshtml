@@ -1,0 +1,43 @@
+﻿@model IEnumerable<BookNookWebApp.Models.Topics>
+
+@{
+    ViewData["Title"] = "Romance";
+}
+
+<h1 class="display-4"><em>Love Is in the Air!</em></h1>
+
+<div class="container mt-4 text-dark">
+    <!-- Forum Header -->
+    <div class="mb-4">
+        <h2 class="fw-bold">Swoon with us</h2>
+        <p class="lead">Share the romance novels that tugged at your heartstrings and left you thinking about the characters long after the final page.</p>
+    </div>
+
+    <!-- New Topic Button -->
+    <div class="mb-3">
+        <a href="/Topics/Create" class="btn btn-dark">Start a New Topic</a>
+    </div>
+
+    <!-- List of Topics -->
+    <div class="list-group">
+        @if (Model.Any())
+        {
+            foreach (var topic in Model)
+            {
+                <a href="/Topics/Details/@topic.TopicId" class="list-group-item list-group-item-action border-dark mb-2 rounded shadow-sm">
+                    <h5 class="mb-1">@topic.Title</h5>
+                    @if (!string.IsNullOrWhiteSpace(topic.Description))
+                    {
+                        <p class="mb-1 text-muted">@topic.Description</p>
+                    }
+                </a>
+            }
+        }
+        else
+        {
+            <div class="alert alert-info">
+                No romance topics yet. Start the love story!
+            </div>
+        }
+    </div>
+</div>
