@@ -15,7 +15,7 @@ namespace BookNookWebApp.Models
         [StringLength(500)]
         public string Description { get; set; }
 
-        // Navigation property for forum posts in this topic
-        public ICollection<ForumPost> ForumPosts { get; set; } = new List<ForumPost>();
+        
+       public ICollection<Comment> Comments { get; set; } = new List<Comment>();
     }
 }

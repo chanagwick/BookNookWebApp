@@ -30,6 +30,64 @@
                     {
                         <p class="mb-1 text-muted">@topic.Description</p>
                     }
+
+                    <!-- Comment Section -->
+                    <div class="mt-3">
+                        <h6>Comments:</h6>
+                        @if (topic.Comments != null && topic.Comments.Any())
+                        {
+                            <ul class="list-group">
+                                @foreach (var comment in topic.Comments)
+                                {
+                                    <li class="list-group-item">
+                                        <strong>@comment.User.UserName</strong> <!-- Display User Name -->
+                                        <span class="text-muted">@comment.PostedAt</span>
+                                        <p>@comment.Content</p>
+
+                                        <!-- Replies Section -->
+                                        @if (comment.Replies.Any())
+                                        {
+                                            <ul class="list-group mt-3">
+                                                @foreach (var reply in comment.Replies)
+                                                {
+                                                    <li class="list-group-item">
+                                                        <strong>@reply.User.UserName</strong>
+                                                        <span class="text-muted">@reply.PostedAt</span>
+                                                        <p>@reply.Content</p>
+                                                    </li>
+                                                }
+                                            </ul>
+                                        }
+
+                                        <!-- Reply Form -->
+                                        <form asp-action="Create" asp-controller="Comments" method="post">
+                                            <div class="form-group">
+                                                <textarea name="Content" class="form-control" placeholder="Write a reply..." rows="3"></textarea>
+                                            </div>
+                                            <input type="hidden" name="TopicId" value="@topic.TopicId" />
+                                            <input type="hidden" name="ParentCommentId" value="@comment.CommentId" />
+                                            <input type="hidden" name="UserId" value="UserIdHere" /> <!-- Replace with actual UserId -->
+                                            <button type="submit" class="btn btn-primary mt-2">Add Reply</button>
+                                        </form>
+                                    </li>
+                                }
+                            </ul>
+                        }
+                        else
+                        {
+                            <p>No comments yet. Be the first to comment!</p>
+                        }
+
+                        <!-- Add a new Comment Form -->
+                        <form asp-action="Create" asp-controller="Comments" method="post">
+                            <div class="form-group">
+                                <textarea name="Content" class="form-control" placeholder="Write a comment..." rows="3"></textarea>
+                            </div>
+                            <input type="hidden" name="TopicId" value="@topic.TopicId" />
+                            <input type="hidden" name="UserId" value="UserIdHere" /> <!-- Replace with actual UserId -->
+                            <button type="submit" class="btn btn-primary mt-2">Add Comment</button>
+                        </form>
+                    </div>
                 </a>
             }
         }

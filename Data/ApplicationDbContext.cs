@@ -24,21 +24,26 @@ namespace BookNookWebApp.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            // Optional: Add any relationships or constraints
-
-            // Topic to ForumPost relationship
-            modelBuilder.Entity<Topics>()
-                .HasMany(t => t.ForumPosts)
-                .WithOne(p => p.Topic)
-                .HasForeignKey(p => p.TopicId)
+            // Topic to Comment relationship
+            modelBuilder.Entity<Comment>()
+                .HasOne(c => c.Topic)
+                .WithMany(t => t.Comments)
+                .HasForeignKey(c => c.TopicId)
                 .OnDelete(DeleteBehavior.NoAction);
 
-            // ForumPost to Comment relationship
-            modelBuilder.Entity<ForumPost>()
-                .HasMany(p => p.Comments)
-                .WithOne(c => c.ForumPost)
-                .HasForeignKey(c => c.ForumPostId)
-                .OnDelete(DeleteBehavior.NoAction);
+            // User to Comment relationship
+            modelBuilder.Entity<Comment>()
+                .HasOne(c => c.User)
+                .WithMany()
+                .HasForeignKey(c => c.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // Self-referencing Comment relationship (Replies)
+            modelBuilder.Entity<Comment>()
+                .HasOne(c => c.ParentComment)
+                .WithMany(c => c.Replies)
+                .HasForeignKey(c => c.ParentCommentId)
+                .OnDelete(DeleteBehavior.Restrict); // Prevent cascade delete loops
         }
     }
 }

@@ -4,6 +4,7 @@ using BookNookWebApp.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BookNookWebApp.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250503022839_UpdateCommentAndTopicModels")]
+    partial class UpdateCommentAndTopicModels
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -63,9 +66,6 @@ namespace BookNookWebApp.Data.Migrations
                     b.Property<int?>("ForumPostId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("ParentCommentId")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("PostedAt")
                         .HasColumnType("datetime2");
 
@@ -79,8 +79,6 @@ namespace BookNookWebApp.Data.Migrations
                     b.HasKey("CommentId");
 
                     b.HasIndex("ForumPostId");
-
-                    b.HasIndex("ParentCommentId");
 
                     b.HasIndex("TopicId");
 
@@ -381,11 +379,6 @@ namespace BookNookWebApp.Data.Migrations
                         .WithMany("Comments")
                         .HasForeignKey("ForumPostId");
 
-                    b.HasOne("BookNookWebApp.Models.Comment", "ParentComment")
-                        .WithMany("Replies")
-                        .HasForeignKey("ParentCommentId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
                     b.HasOne("BookNookWebApp.Models.Topics", "Topic")
                         .WithMany("Comments")
                         .HasForeignKey("TopicId")
@@ -397,8 +390,6 @@ namespace BookNookWebApp.Data.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("ParentComment");
 
                     b.Navigation("Topic");
 
@@ -473,11 +464,6 @@ namespace BookNookWebApp.Data.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("BookNookWebApp.Models.Comment", b =>
-                {
-                    b.Navigation("Replies");
                 });
 
             modelBuilder.Entity("BookNookWebApp.Models.ForumPost", b =>

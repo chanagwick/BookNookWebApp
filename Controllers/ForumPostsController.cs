@@ -43,8 +43,6 @@ namespace BookNookWebApp.Controllers
             var forumPost = await _context.ForumPosts
                 .Include(f => f.Topic)
                 .Include(f => f.User)
-                .Include(f => f.Comments)  // Include the comments for this post
-                .ThenInclude(c => c.User)  // Include the user who wrote the comment
                 .FirstOrDefaultAsync(m => m.ForumPostId == id);
 
             if (forumPost == null)
@@ -53,38 +51,6 @@ namespace BookNookWebApp.Controllers
             }
 
             return View(forumPost);  // Pass the ForumPost to the view
-        }
-
-        // POST: ForumPosts/AddComment/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddComment(int postId, string content)
-        {
-            if (string.IsNullOrEmpty(content))
-            {
-                return RedirectToAction(nameof(Details), new { id = postId });
-            }
-
-            var forumPost = await _context.ForumPosts.FindAsync(postId);
-            if (forumPost == null)
-            {
-                return NotFound();
-            }
-
-            var userId = _userManager.GetUserId(User);
-            var comment = new Comment
-            {
-                Content = content,
-                UserId = userId,
-                ForumPostId = postId,
-                PostedAt = DateTime.UtcNow
-            };
-
-            forumPost.Comments.Add(comment); // Add the comment directly to the Comments collection
-            _context.Comments.Add(comment);  // Add the comment to the DbContext
-            await _context.SaveChangesAsync(); // Save the changes
-
-            return RedirectToAction(nameof(Details), new { id = postId }); // Redirect to Details
         }
 
         // GET: ForumPosts/Create

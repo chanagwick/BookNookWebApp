@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -22,7 +21,9 @@ namespace BookNookWebApp.Controllers
         // GET: Comments
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Comments.Include(c => c.ForumPost).Include(c => c.User);
+            var applicationDbContext = _context.Comments
+                .Include(c => c.Topic)
+                .Include(c => c.User);
             return View(await applicationDbContext.ToListAsync());
         }
 
@@ -35,9 +36,10 @@ namespace BookNookWebApp.Controllers
             }
 
             var comment = await _context.Comments
-                .Include(c => c.ForumPost)
+                .Include(c => c.Topic)
                 .Include(c => c.User)
                 .FirstOrDefaultAsync(m => m.CommentId == id);
+
             if (comment == null)
             {
                 return NotFound();
@@ -47,10 +49,10 @@ namespace BookNookWebApp.Controllers
         }
 
         // GET: Comments/Create
-        public IActionResult Create(int? forumPostId)
+        public IActionResult Create(int? topicId, int? parentCommentId)
         {
-            // Optionally, you could pass the ForumPostId to preselect the post
-            ViewData["ForumPostId"] = forumPostId.HasValue ? forumPostId.Value : 0;
+            ViewData["TopicId"] = topicId ?? 0;
+            ViewData["ParentCommentId"] = parentCommentId ?? 0;
             ViewData["UserId"] = new SelectList(_context.Users, "Id", "UserName");
             return View();
         }
@@ -58,19 +60,20 @@ namespace BookNookWebApp.Controllers
         // POST: Comments/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("CommentId,Content,ForumPostId,UserId")] Comment comment)
+        public async Task<IActionResult> Create([Bind("CommentId,Content,TopicId,UserId,ParentCommentId")] Comment comment)
         {
             if (ModelState.IsValid)
             {
-                // Setting the 'PostedAt' to the current time when creating a new comment
                 comment.PostedAt = DateTime.Now;
 
                 _context.Add(comment);
                 await _context.SaveChangesAsync();
-                return RedirectToAction("Details", "ForumPosts", new { id = comment.ForumPostId });
+                return RedirectToAction("Details", "Topics", new { id = comment.TopicId });
             }
-            ViewData["ForumPostId"] = new SelectList(_context.ForumPosts, "ForumPostId", "Content", comment.ForumPostId);
+
+            ViewData["TopicId"] = new SelectList(_context.Topics, "TopicId", "Title", comment.TopicId);
             ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", comment.UserId);
+            ViewData["ParentCommentId"] = comment.ParentCommentId;
             return View(comment);
         }
 
@@ -87,15 +90,17 @@ namespace BookNookWebApp.Controllers
             {
                 return NotFound();
             }
-            ViewData["ForumPostId"] = new SelectList(_context.ForumPosts, "ForumPostId", "Content", comment.ForumPostId);
+
+            ViewData["TopicId"] = new SelectList(_context.Topics, "TopicId", "Title", comment.TopicId);
             ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", comment.UserId);
+            ViewData["ParentCommentId"] = comment.ParentCommentId;
             return View(comment);
         }
 
         // POST: Comments/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("CommentId,Content,PostedAt,ForumPostId,UserId")] Comment comment)
+        public async Task<IActionResult> Edit(int id, [Bind("CommentId,Content,PostedAt,TopicId,UserId,ParentCommentId")] Comment comment)
         {
             if (id != comment.CommentId)
             {
@@ -122,8 +127,10 @@ namespace BookNookWebApp.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ForumPostId"] = new SelectList(_context.ForumPosts, "ForumPostId", "Content", comment.ForumPostId);
+
+            ViewData["TopicId"] = new SelectList(_context.Topics, "TopicId", "Title", comment.TopicId);
             ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", comment.UserId);
+            ViewData["ParentCommentId"] = comment.ParentCommentId;
             return View(comment);
         }
 
@@ -136,9 +143,10 @@ namespace BookNookWebApp.Controllers
             }
 
             var comment = await _context.Comments
-                .Include(c => c.ForumPost)
+                .Include(c => c.Topic)
                 .Include(c => c.User)
                 .FirstOrDefaultAsync(m => m.CommentId == id);
+
             if (comment == null)
             {
                 return NotFound();
@@ -168,4 +176,3 @@ namespace BookNookWebApp.Controllers
         }
     }
 }
-

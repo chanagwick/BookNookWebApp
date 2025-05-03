@@ -4,6 +4,7 @@ using BookNookWebApp.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BookNookWebApp.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250503021318_UpdateTopicsModel")]
+    partial class UpdateTopicsModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -60,17 +63,11 @@ namespace BookNookWebApp.Data.Migrations
                         .HasMaxLength(1000)
                         .HasColumnType("nvarchar(1000)");
 
-                    b.Property<int?>("ForumPostId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("ParentCommentId")
+                    b.Property<int>("ForumPostId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("PostedAt")
                         .HasColumnType("datetime2");
-
-                    b.Property<int>("TopicId")
-                        .HasColumnType("int");
 
                     b.Property<string>("UserId")
                         .IsRequired()
@@ -79,10 +76,6 @@ namespace BookNookWebApp.Data.Migrations
                     b.HasKey("CommentId");
 
                     b.HasIndex("ForumPostId");
-
-                    b.HasIndex("ParentCommentId");
-
-                    b.HasIndex("TopicId");
 
                     b.HasIndex("UserId");
 
@@ -162,6 +155,10 @@ namespace BookNookWebApp.Data.Migrations
                         .IsRequired()
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("Responses")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -377,18 +374,9 @@ namespace BookNookWebApp.Data.Migrations
 
             modelBuilder.Entity("BookNookWebApp.Models.Comment", b =>
                 {
-                    b.HasOne("BookNookWebApp.Models.ForumPost", null)
+                    b.HasOne("BookNookWebApp.Models.ForumPost", "ForumPost")
                         .WithMany("Comments")
-                        .HasForeignKey("ForumPostId");
-
-                    b.HasOne("BookNookWebApp.Models.Comment", "ParentComment")
-                        .WithMany("Replies")
-                        .HasForeignKey("ParentCommentId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("BookNookWebApp.Models.Topics", "Topic")
-                        .WithMany("Comments")
-                        .HasForeignKey("TopicId")
+                        .HasForeignKey("ForumPostId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
@@ -398,9 +386,7 @@ namespace BookNookWebApp.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("ParentComment");
-
-                    b.Navigation("Topic");
+                    b.Navigation("ForumPost");
 
                     b.Navigation("User");
                 });
@@ -475,17 +461,7 @@ namespace BookNookWebApp.Data.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("BookNookWebApp.Models.Comment", b =>
-                {
-                    b.Navigation("Replies");
-                });
-
             modelBuilder.Entity("BookNookWebApp.Models.ForumPost", b =>
-                {
-                    b.Navigation("Comments");
-                });
-
-            modelBuilder.Entity("BookNookWebApp.Models.Topics", b =>
                 {
                     b.Navigation("Comments");
                 });
